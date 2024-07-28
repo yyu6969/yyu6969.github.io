@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overall U.S. GDP trends</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            width: 100%;
+            margin-top: 4.5px;
+            text-align: center; /* Centers the navigation menu */
+            background-color: none; /* Gives a background color for visibility */
+        }
+        nav ul {
+            list-style: none; /* Removes default list styling */
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline; /* Displays list items in a line */
+            margin-right: 20px; /* Adds space between items */
+        }
+        nav ul li a {
+            text-decoration: none; /* Removes underline from links */
+            color: black; /* Sets text color */
+            font-weight: bold; /* Makes text bold */
+            padding: 10px; /* Adds padding for better link appearance */
+        }
+        nav ul li a.active {
+            background-color: #dcecf0; /* Light grey background for active link */
+            color: rgb(0, 88, 230); /* Blue text color for active link */
+            padding: 9px 10px; /* Increased vertical padding */
+        }
+        nav ul li a#prev-button, nav ul li a#next-button {
+            padding: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+        }
+
+        section {
+            max-width: 1100px;  /* Adjust this value as needed */
+            margin: 20px auto; /* Centers the section horizontally */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h3, h4 {
+            color: #0058e6;
+        }
+        p, li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        ul {
+            padding-left: 20px; /* Adds indentation to list */
+        }
+
+    </style>
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" id="prev-button"><i class="fas fa-chevron-left"></i></a></li>
+            <li><a href="index.html" class="active">Introduction</a></li>
+            <li><a href="period1.html">1997-2005</a></li>
+            <li><a href="period2.html">2006-2010</a></li>
+            <li><a href="period3.html">2011-2017</a></li>
+            <li><a href="period4.html">2018-2022</a></li>
+            <li><a href="industry.html">Industry Trends</a></li>
+            <li><a href="#" id="next-button"><i class="fas fa-chevron-right"></i></a></li>
+        </ul>
+    </nav>
+
+    <div>
+        <section>
+            <h1>Tracing the Economic Pulse: A Visual Journey through U.S. GDP (1997-2022)</h1>
+            <p>Welcome to "Tracing the Economic Pulse: A Visual Journey through U.S. GDP (1997-2022)". This project endeavors to illuminate the economic landscape of the United States over a quarter of a century, encapsulating periods of both prosperity and challenge. By utilizing interactive line charts, this visualization invites users to explore the comprehensive trends in the U.S. GDP across all industries, and understand the substantial impacts of major national and global events on the American economy.</p>
+            <h3>Explore the process</h3>
+            <p>The first four scenes of this journey—spanning from 1997 to 2022—How major events in the U.S. affect economic upturns and downturns. These visualizations strive to provide a clear, chronological narrative of how such events have influenced economic activities, drawing a vivid picture of resilience and recovery.</p>
+            <h4>Some major events</h4>
+            <ul>
+                <li><strong>Tech Boom of the 1990s (1991-2000):</strong> An economic boom driven by the rise of the internet and digital technologies, leading to a significant expansion of new industries and job creation.</li>
+                <li><strong>Dot-com Bubble Burst (2000-2002):</strong> The speculative bubble in internet companies burst, leading to a market crash and a recession.</li>
+                <li><strong>Mid-2000s Economic Expansion (2003-2007):</strong> Economic growth driven by real estate and financial sector expansion, though it culminated in the financial crisis.</li>
+                <li><strong>Financial Crisis and Great Recession (2007-2009):</strong> Initiated by the collapse of the housing market and high-risk financial products, causing a deep global recession.</li>
+                <li><strong>Recovery from the Great Recession (2009-2016):</strong> A slow but steady recovery marked by expansive monetary policy and gradual job growth.</li>
+                <li><strong>Economic Growth and Shale Oil Boom (2010-2020):</strong> Growth was bolstered by the shale oil and gas boom, which made the U.S. a leading oil producer and contributed to economic stability.</li>
+                <li><strong>COVID-19 Pandemic (2020-Present):</strong> The pandemic caused unprecedented economic disruption, leading to a significant contraction in GDP, followed by a rapid but uneven recovery.</li>
+                <li><strong>etc.</strong></li>
+            </ul>
+            <p>In the final scene of this exploration, users are granted the autonomy to delve deeper into individual industry performances. This interactive feature allows for a more personalized analysis, enabling viewers to uncover how distinct sectors have navigated through the fluctuations of the economy, adapted to changes, and contributed to the overall GDP.</p>
+            <h3>Purpose</h3>
+            <p>This project is designed not just for economists or students, but for anyone with an interest in understanding the economic forces that shape our lives. Through these visualizations, we hope to provide insights that are informative, engaging, and accessible to all.</p>
+            <p>Join us on this visual journey to decode the complexities of the economy through the lens of data.</p>
+            <h3>References</h3>
+            <p>All the dataset and information from: <a href="https://www.bea.gov/">Bureau of Economic Analysis (BEA)</a></p>
+        </section>
+    </div>
+
+
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('nav ul li a');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            
+            let activeIndex = -1;
+            links.forEach((link, index) => {
+                if (link.classList.contains('active')) {
+                    activeIndex = index;
+                }
+            });
+        
+            if (activeIndex !== -1) {
+                // Set the previous button link
+                if (activeIndex > 1) {
+                    prevButton.href = links[activeIndex - 1].href;
+                } else {
+                    prevButton.href = "#";
+                    prevButton.style.pointerEvents = "none";  // Disable the button
+                }
+        
+                // Set the next button link
+                if (activeIndex < links.length - 2) {
+                    nextButton.href = links[activeIndex + 1].href;
+                } else {
+                    nextButton.href = "#";
+                    nextButton.style.pointerEvents = "none";  // Disable the button
+                }
+            }
+        });
+    </script>
+</body>
+</html>

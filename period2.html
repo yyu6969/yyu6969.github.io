@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overall U.S. GDP trends</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            width: 100%;
+            margin-top: 4.5px;
+            text-align: center; /* Centers the navigation menu */
+            background-color: none; /* Gives a background color for visibility */
+        }
+        nav ul {
+            list-style: none; /* Removes default list styling */
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline; /* Displays list items in a line */
+            margin-right: 20px; /* Adds space between items */
+        }
+        nav ul li a {
+            text-decoration: none; /* Removes underline from links */
+            color: black; /* Sets text color */
+            font-weight: bold; /* Makes text bold */
+            padding: 10px; /* Adds padding for better link appearance */
+        }
+        nav ul li a.active {
+            background-color: #dcecf0; /* Light grey background for active link */
+            color: rgb(0, 88, 230); /* Blue text color for active link */
+            padding: 9px 10px; /* Increased vertical padding */
+        }
+        nav ul li a#prev-button, nav ul li a#next-button {
+            padding: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+        }
+
+        section {
+            max-width: 1100px;  /* Adjust this value as needed */
+            margin: 20px auto; /* Centers the section horizontally */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h3, h4 {
+            color: #0058e6;
+        }
+        p, li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        ul {
+            padding-left: 20px; /* Adds indentation to list */
+        }
+    </style>
+
+
+    <style>
+        #charts-container {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            width: 100%; /* Full width to allow centering */
+            height: 600px; /* Adjusted height */
+        }
+
+        #line-chart {
+            /* Ensures the SVG fills this container but respects the size of the SVG set in JavaScript */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 1200px; /* Explicit width of the SVG */
+            height: 600px; /* Explicit height of the SVG */
+        }
+    </style>
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" id="prev-button"><i class="fas fa-chevron-left"></i></a></li>
+            <li><a href="index.html">Introduction</a></li>
+            <li><a href="period1.html">1997-2005</a></li>
+            <li><a href="period2.html" class="active">2006-2010</a></li>
+            <li><a href="period3.html">2011-2017</a></li>
+            <li><a href="period4.html">2018-2022</a></li>
+            <li><a href="industry.html">Industry Trends</a></li>
+            <li><a href="#" id="next-button"><i class="fas fa-chevron-right"></i></a></li>
+        </ul>
+    </nav>
+
+    <div>
+        <section>
+            <h1>U.S. Economic Growth: A Detailed Analysis of GDP from 2006-2010</h1>
+            <p>The chart of the U.S. GDP growth from 1997 to 2005, marking a period of economic turmoil. Initially, GDP shows a peak, but it then suffers a sharp decline around 2008-2009 before stabilizing. The significant downturn reflects the impact of the 2008 global financial crisis, triggered by the collapse of the housing market and the failure of key financial institutions. The crisis led to widespread unemployment and a sharp decline in consumer spending, as household wealth diminished, which collectively resulted in a substantial contraction in economic activity. The graph illustrates the dramatic fluctuation in GDP during this period, highlighting the vulnerability of economic systems to financial disruptions and market instabilities.</p>
+            <div id="charts-container">
+                <div id="line-chart"></div>
+            </div>
+        </section>
+    </div>
+
+
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('nav ul li a');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            
+            let activeIndex = -1;
+            links.forEach((link, index) => {
+                if (link.classList.contains('active')) {
+                    activeIndex = index;
+                }
+            });
+        
+            if (activeIndex !== -1) {
+                // Set the previous button link
+                if (activeIndex > 1) {
+                    prevButton.href = links[activeIndex - 1].href;
+                } else {
+                    prevButton.href = "#";
+                    prevButton.style.pointerEvents = "none";  // Disable the button
+                }
+        
+                // Set the next button link
+                if (activeIndex < links.length - 2) {
+                    nextButton.href = links[activeIndex + 1].href;
+                } else {
+                    nextButton.href = "#";
+                    nextButton.style.pointerEvents = "none";  // Disable the button
+                }
+            }
+        });
+    </script>
+
+    <script>
+        d3.csv('US_GDP_from_1997_to_2022.csv', function(error, data) {
+            if (error) throw error;
+
+            // Transform data from wide to long format
+            var parsedData = [];
+            data.forEach(function(d) {
+                Object.keys(d).forEach(function(key) {
+                    if (key !== 'Industry' && +key >= 2006 && +key <= 2010) {
+                        parsedData.push({Year: +key, Value: +d[key]});
+                    }
+                });
+            });
+
+            createLineChart(parsedData);
+        });
+
+        function createLineChart(data) {
+            d3.select("#line-chart").select("svg").remove(); // Clear existing SVG
+
+            var svgWidth = 500; // Match this with CSS
+            var svgHeight = 600; // Match this with CSS
+            var margin = {top: 50, right: 50, bottom: 120, left: 120}; // Adjust bottom and left for label space
+
+            var width = svgWidth - margin.left - margin.right;
+            var height = svgHeight - margin.top - margin.bottom;
+
+            var svg_line = d3.select("#line-chart")
+                .append("svg")
+                .attr("width", svgWidth)
+                .attr("height", svgHeight)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Set the ranges
+            var x = d3.scaleLinear().range([0, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+
+            // Define the axes
+            var xAxis = d3.axisBottom(x).tickFormat(d3.format("d")).tickValues(d3.range(2006, d3.max(data, function(d) { return d.Year; }) + 1));
+            var yAxis = d3.axisLeft(y);
+
+            // Scale the range of the data
+            x.domain([2006, d3.max(data, function(d) { return d.Year; })]);
+            y.domain([0, d3.max(data, function(d) { return d.Value; })]);
+
+            // Add the X Axis
+            var gX = svg_line.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            // Add the Y Axis
+            var gY = svg_line.append("g")
+                .call(yAxis);
+            
+            // X-axis Label
+            gX.append("text")
+                .attr("class", "axis-label")
+                .attr("text-anchor", "middle") // Centers the text horizontally
+                .attr("x", 170) // Centers horizontally in the SVG
+                .attr("y", 40) // Centers vertically in the SVG (you might want to adjust this)
+                .text("Year")
+                .attr("fill", "black") // Makes the label red for visibility
+                .attr("font-size", "16px"); // Increases font size for visibility
+
+            // Y-axis Label
+            gY.append("text")
+                .attr("class", "axis-label")
+                .attr("text-anchor", "middle") // Centers the text vertically after rotation
+                .attr("transform", "rotate(-90)")
+                .attr("y", -70) // Centers the label horizontally across the width
+                .attr("x", -200) // Places in the middle of the height
+                .text("GDP (in Millions)")
+                .attr("fill", "black") // Makes the label blue for visibility
+                .attr("font-size", "16px"); // Increases font size for visibility
+
+            // Define the line
+            var valueline = d3.line()
+                .x(function(d) { return x(d.Year); })
+                .y(function(d) { return y(d.Value); });
+
+            // Add the valueline path.
+            for (let i = 0; i < data.length - 1; i++) {
+                svg_line.append("line")
+                    .attr("x1", x(data[i].Year))
+                    .attr("y1", y(data[i].Value))
+                    .attr("x2", x(data[i + 1].Year))
+                    .attr("y2", y(data[i + 1].Value))
+                    .attr("stroke", data[i + 1].Value < data[i].Value ? "red" : "steelblue")
+                    .attr("stroke-width", 2)
+                    .attr("stroke-linecap", "round");
+            }
+
+            svg_line.append("defs").append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 5) // Controls the horizontal position of the arrowhead
+                .attr("refY", 0)
+                .attr("markerWidth", 5)
+                .attr("markerHeight", 5)
+                .attr("orient", "auto")
+            .append("path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .attr("fill", "red");
+
+            var startPoint = { year: 2008, value: data.find(d => d.Year === 2008).Value };
+            var endPoint = { year: 2009, value: data.find(d => d.Year === 2009).Value };
+
+            svg_line.append("line")
+                .attr("x1", x(startPoint.year))
+                .attr("y1", y(startPoint.value) + 30)
+                .attr("x2", x(endPoint.year))
+                .attr("y2", y(endPoint.value) + 30)
+                .attr("stroke", "red")
+                .attr("stroke-width", 2)
+                .attr("marker-end", "url(#arrowhead)");
+
+            // Add description text, positioned below the header
+            description = "Between 2008 and 2009,; the U.S. GDP experienced a significant; downturn due to the global financial crisis,; triggered by the housing market collapse; and the insolvency of major financial; institutions like Lehman Brothers.; This led to soaring unemployment,; reduced consumer spending due to a decline; in household wealth, and resulted; in a contraction of economic activity.";
+            let descriptionParts = description.split(";");
+            descriptionParts.forEach((part, i) => {
+                svg_line.append("text")
+                    .attr("x", x((startPoint.year + endPoint.year) / 2))
+                    .attr("y", y((startPoint.value + endPoint.value) / 2) + 80 + (i * 15)) // Position text below the header, spaced by line
+                    .text(part.trim()) // Trim in case there are leading/trailing spaces
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "10px")
+                    .attr("fill", "black");
+            });
+        }
+    </script>
+</body>
+</html>
