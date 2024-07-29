@@ -261,7 +261,7 @@
 
         var industries = [
             "Agriculture, forestry, fishing, and hunting",
-            "Mining",
+            "Mining, quarrying, and oil and gas extraction",
             "Utilities",
             "Construction",
             "Manufacturing",
@@ -273,7 +273,7 @@
             "Professional and business services",
             "Educational services, health care, and social assistance",
             "Arts, entertainment, recreation, accommodation, and food services",
-            "Federal",
+            "Federal civilian",
             "State and local",
         ];
 
@@ -828,8 +828,119 @@
                     });
                 }
 
-                
+                let datum_1 = LineChartData[index].values.find(d => d.Year === LineChartData[index].annotations[1].year);
+                if (datum_1) {
+                    let xPosition_1 = x(datum_1.Year);
+                    let yPosition_1 = y(datum_1.Value);
 
+                    // Draw a line extending from the point downwards
+                    svg.append("line")
+                        .attr("x1", xPosition_1)
+                        .attr("y1", yPosition_1 + 5)
+                        .attr("x2", xPosition_1)
+                        .attr("y2", yPosition_1 + 70) // Adjust length as needed
+                        .attr("stroke", "grey")
+                        .attr("stroke-width", 2)
+                        .attr("stroke-dasharray", "3,3");
+
+                    // Add header text
+                    svg.append("text")
+                        .attr("x", xPosition_1)
+                        .attr("y", yPosition_1 + 80)
+                        .text(LineChartData[index].annotations[1].header)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "12px")
+                        .attr("font-weight", "bold") // Make the header bold
+                        .attr("fill", "black");
+
+                    // Add description text, positioned below the header
+                    let descriptionParts = LineChartData[index].annotations[1].description.split("; ");
+                    descriptionParts.forEach((part, i) => {
+                        svg.append("text")
+                            .attr("x", xPosition_1)
+                            .attr("y", yPosition_1 + 95 + (i * 15)) // Position text below the header, spaced by line
+                            .text(part.trim()) // Trim in case there are leading/trailing spaces
+                            .attr("text-anchor", "middle")
+                            .attr("font-size", "10px")
+                            .attr("fill", "black");
+                    });
+                }
+
+                let datum_2 = LineChartData[index].values.find(d => d.Year === LineChartData[index].annotations[2].year);
+                if (datum_2) {
+                    let xPosition_2 = x(datum_2.Year);
+                    let yPosition_2 = y(datum_2.Value);
+
+                    // Draw a line extending from the point downwards
+                    svg.append("line")
+                        .attr("x1", xPosition_2)
+                        .attr("y1", yPosition_2 + 5)
+                        .attr("x2", xPosition_2)
+                        .attr("y2", yPosition_2 + 150) // Adjust length as needed
+                        .attr("stroke", "grey")
+                        .attr("stroke-width", 2)
+                        .attr("stroke-dasharray", "3,3");
+
+                    // Add header text
+                    svg.append("text")
+                        .attr("x", xPosition_2)
+                        .attr("y", yPosition_2 + 165)
+                        .text(LineChartData[index].annotations[2].header)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "12px")
+                        .attr("font-weight", "bold") // Make the header bold
+                        .attr("fill", "black");
+
+                    // Add description text, positioned below the header
+                    let descriptionParts = LineChartData[index].annotations[2].description.split("; ");
+                    descriptionParts.forEach((part, i) => {
+                        svg.append("text")
+                            .attr("x", xPosition_2)
+                            .attr("y", yPosition_2 + 180 + (i * 15)) // Position text below the header, spaced by line
+                            .text(part.trim()) // Trim in case there are leading/trailing spaces
+                            .attr("text-anchor", "middle")
+                            .attr("font-size", "10px")
+                            .attr("fill", "black");
+                    });
+                }
+
+                let datum_3 = LineChartData[index].values.find(d => d.Year === LineChartData[index].annotations[3].year);
+                if (datum_3) {
+                    let xPosition_3 = x(datum_3.Year);
+                    let yPosition_3 = y(datum_3.Value);
+
+                    // Draw a line extending from the point downwards
+                    svg.append("line")
+                        .attr("x1", xPosition_3)
+                        .attr("y1", yPosition_3 + 5)
+                        .attr("x2", xPosition_3)
+                        .attr("y2", yPosition_3 + 100) // Adjust length as needed
+                        .attr("stroke", "grey")
+                        .attr("stroke-width", 2)
+                        .attr("stroke-dasharray", "3,3");
+
+                    // Add header text
+                    svg.append("text")
+                        .attr("x", xPosition_3)
+                        .attr("y", yPosition_3 + 110)
+                        .text(LineChartData[index].annotations[3].header)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "12px")
+                        .attr("font-weight", "bold") // Make the header bold
+                        .attr("fill", "black");
+
+                    // Add description text, positioned below the header
+                    let descriptionParts = LineChartData[index].annotations[3].description.split("; ");
+                    descriptionParts.forEach((part, i) => {
+                        svg.append("text")
+                            .attr("x", xPosition_3)
+                            .attr("y", yPosition_3 + 125 + (i * 15)) // Position text below the header, spaced by line
+                            .text(part.trim()) // Trim in case there are leading/trailing spaces
+                            .attr("text-anchor", "middle")
+                            .attr("font-size", "10px")
+                            .attr("fill", "black");
+                    });
+                }
             } 
             
             if (index === 2) { // Utilities
@@ -1984,44 +2095,6 @@
                         svg.append("text")
                             .attr("x", xPosition_1)
                             .attr("y", yPosition_1 + 95 + (i * 15)) // Position text below the header, spaced by line
-                            .text(part.trim()) // Trim in case there are leading/trailing spaces
-                            .attr("text-anchor", "middle")
-                            .attr("font-size", "10px")
-                            .attr("fill", "black");
-                    });
-                }
-
-                let datum_2 = LineChartData[index].values.find(d => d.Year === LineChartData[index].annotations[2].year);
-                if (datum_2) {
-                    let xPosition_2 = x(datum_2.Year);
-                    let yPosition_2 = y(datum_2.Value);
-
-                    // Draw a line extending from the point downwards
-                    svg.append("line")
-                        .attr("x1", xPosition_2)
-                        .attr("y1", yPosition_2 + 5)
-                        .attr("x2", xPosition_2)
-                        .attr("y2", yPosition_2 + 150) // Adjust length as needed
-                        .attr("stroke", "grey")
-                        .attr("stroke-width", 2)
-                        .attr("stroke-dasharray", "3,3");
-
-                    // Add header text
-                    svg.append("text")
-                        .attr("x", xPosition_2)
-                        .attr("y", yPosition_2 + 165)
-                        .text(LineChartData[index].annotations[2].header)
-                        .attr("text-anchor", "middle")
-                        .attr("font-size", "12px")
-                        .attr("font-weight", "bold") // Make the header bold
-                        .attr("fill", "black");
-
-                    // Add description text, positioned below the header
-                    let descriptionParts = LineChartData[index].annotations[2].description.split("; ");
-                    descriptionParts.forEach((part, i) => {
-                        svg.append("text")
-                            .attr("x", xPosition_2)
-                            .attr("y", yPosition_2 + 180 + (i * 15)) // Position text below the header, spaced by line
                             .text(part.trim()) // Trim in case there are leading/trailing spaces
                             .attr("text-anchor", "middle")
                             .attr("font-size", "10px")
