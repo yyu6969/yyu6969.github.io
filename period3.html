@@ -89,12 +89,12 @@
     <nav>
         <ul>
             <li><a href="#" id="prev-button"><i class="fas fa-chevron-left"></i></a></li>
-            <li><a href="index.html">Introduction</a></li>
-            <li><a href="period1.html">1997-2005</a></li>
-            <li><a href="period2.html">2006-2010</a></li>
-            <li><a href="period3.html" class="active" >2011-2017</a></li>
-            <li><a href="period4.html">2018-2022</a></li>
-            <li><a href="industry.html">Industry Trends</a></li>
+            <li><a id="index.html">Introduction</a></li>
+            <li><a id="period1.html">1997-2005</a></li>
+            <li><a id="period2.html">2006-2010</a></li>
+            <li><a id="period3.html" class="active" >2011-2017</a></li>
+            <li><a id="period4.html">2018-2022</a></li>
+            <li><a id="industry.html">Industry Trends</a></li>
             <li><a href="#" id="next-button"><i class="fas fa-chevron-right"></i></a></li>
         </ul>
     </nav>
@@ -130,7 +130,7 @@
             if (activeIndex !== -1) {
                 // Set the previous button link
                 if (activeIndex > 1) {
-                    prevButton.href = links[activeIndex - 1].href;
+                    prevButton.href = links[activeIndex - 1].id;
                 } else {
                     prevButton.href = "#";
                     prevButton.style.pointerEvents = "none";  // Disable the button
@@ -138,7 +138,7 @@
         
                 // Set the next button link
                 if (activeIndex < links.length - 2) {
-                    nextButton.href = links[activeIndex + 1].href;
+                    nextButton.href = links[activeIndex + 1].id;
                 } else {
                     nextButton.href = "#";
                     nextButton.style.pointerEvents = "none";  // Disable the button
